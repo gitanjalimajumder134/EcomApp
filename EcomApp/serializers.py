@@ -3,7 +3,7 @@ from .models import Users
 
 
 class UserSerializer(serializers.ModelSerializer):
-    class meta:
+    class Meta:
         model = Users
         fields = ['id', 'name', 'email', 'password']
         extra_kwargs = {
@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
-        instance = self.meta.model(**validated_data)
+        instance = self.Meta.model(**validated_data)
         if password is not None:
             instance.set_password(password)
         instance.save()

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Users
+from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,3 +17,9 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+    
+
+class QuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quizzes
+        fields = ['title']

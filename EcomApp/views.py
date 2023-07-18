@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import generics
 from rest_framework.exceptions import AuthenticationFailed
-from .serializers import UserSerializer
-from .models import Users
+from .serializers import *
+from .models import *
 import jwt, datetime
 
 
@@ -63,3 +64,8 @@ class LogoutView(APIView):
             'message': 'Successfully Logout'
         }
         return response
+    
+
+class Quiz(generics.ListAPIView):
+    serializer_class = QuizSerializer
+    queryset = Quizzes.objects.all()

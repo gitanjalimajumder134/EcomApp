@@ -7,63 +7,63 @@ from .models import *
 import jwt, datetime
 
 
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+# class RegisterView(APIView):
+#     def post(self, request):
+#         serializer = UserSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)
     
 
-class LoginView(APIView):
-    def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
+# class LoginView(APIView):
+#     def post(self, request):
+#         email = request.data['email']
+#         password = request.data['password']
 
-        user = Users.objects.filter(email=email).first()
+#         user = Users.objects.filter(email=email).first()
 
-        if user is None:
-            return AuthenticationFailed('User not Found')
-        if not user.check_password(password):
-            return AuthenticationFailed('Incorrect Password!')
-        payload = {
-            'id': user.id,
-            'exp': datetime.datetime.now() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.now()
-        }
+#         if user is None:
+#             return AuthenticationFailed('User not Found')
+#         if not user.check_password(password):
+#             return AuthenticationFailed('Incorrect Password!')
+#         payload = {
+#             'id': user.id,
+#             'exp': datetime.datetime.now() + datetime.timedelta(minutes=60),
+#             'iat': datetime.datetime.now()
+#         }
 
-        token = jwt.encode(payload, 'secret', algorithm='HS256').decode('utf-8')
+#         token = jwt.encode(payload, 'secret', algorithm='HS256').decode('utf-8')
 
-        response = Response()
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.data = {
-            'jwt': token
-        }
+#         response = Response()
+#         response.set_cookie(key='jwt', value=token, httponly=True)
+#         response.data = {
+#             'jwt': token
+#         }
 
-        return response
+#         return response
     
 
-class UserView(APIView):
-    def get(self, request):
-        token = request.COOKIES.get('jwt')
-        if not token:
-            raise AuthenticationFailed('User not found!')
-        try:
-            payload = jwt.decode(token, 'secret', algorithm=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated')
-        user = Users.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
+# class UserView(APIView):
+#     def get(self, request):
+#         token = request.COOKIES.get('jwt')
+#         if not token:
+#             raise AuthenticationFailed('User not found!')
+#         try:
+#             payload = jwt.decode(token, 'secret', algorithm=['HS256'])
+#         except jwt.ExpiredSignatureError:
+#             raise AuthenticationFailed('Unauthenticated')
+#         user = Users.objects.filter(id=payload['id']).first()
+#         serializer = UserSerializer(user)
+#         return Response(serializer.data)
     
-class LogoutView(APIView):
-    def post(self, request):
-        response = Response()
-        response.delete_cookie('jwt')
-        response.data = {
-            'message': 'Successfully Logout'
-        }
-        return response
+# class LogoutView(APIView):
+#     def post(self, request):
+#         response = Response()
+#         response.delete_cookie('jwt')
+#         response.data = {
+#             'message': 'Successfully Logout'
+#         }
+#         return response
     
 
 class Quiz(generics.ListAPIView):
